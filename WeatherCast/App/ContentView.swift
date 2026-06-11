@@ -8,32 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
+
     @EnvironmentObject var container: DIContainer
-    @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeView(viewModel: HomeViewModel(container: container))
-                .tag(0)
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
+        ZStack {
+            Color(hex: "#0D1B2A")
+                .ignoresSafeArea()
 
-            Text("Search")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemBackground)) 
-                .tag(1)
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
+            TabView {
+                HomeView(viewModel: HomeViewModel(container: container))
+                    .tabItem {
+                        Label("Home", systemImage: "house.fill")
+                    }
 
-            Text("Saved")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemBackground))
-                .tag(2)
-                .tabItem {
-                    Label("Saved", systemImage: "heart.fill")
-                }
+                SearchView(viewModel: SearchViewModel(container: container))
+                    .tabItem {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+
+                SavedLocationsView(viewModel: SavedLocationsViewModel(container: container))
+                    .tabItem {
+                        Label("Saved", systemImage: "heart.fill")
+                    }
+            }
         }
     }
 }
