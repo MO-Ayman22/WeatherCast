@@ -15,28 +15,22 @@ enum SearchState {
     case error(String)
 }
 
-import Foundation
-import Combine
-
 final class SearchViewModel: ObservableObject {
 
     @Published var searchText: String = ""
-    @Published var state: SearchState = .idle
+    @Published private(set) var state: SearchState = .idle
 
     private let searchCitiesUseCase: SearchCitiesUseCase
     private var cancellables = Set<AnyCancellable>()
 
     init(container: DIContainer) {
         self.searchCitiesUseCase = container.searchCitiesUseCase
-
         observeSearchText()
     }
 
     private func observeSearchText() {
-
         $searchText
-            .debounce(for: .milliseconds(500),
-                      scheduler: DispatchQueue.main)
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] query in
                 self?.search(query: query)
@@ -45,31 +39,20 @@ final class SearchViewModel: ObservableObject {
     }
 
     private func search(query: String) {
-
-        let query = query.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
-
-        guard !query.isEmpty else {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
             state = .idle
             return
         }
-
         state = .loading
-
-        searchCitiesUseCase
-            .execute(query: query)
+        searchCitiesUseCase.execute(query: trimmed)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-
                 if case .failure(let error) = completion {
                     self?.state = .error(error.localizedDescription)
                 }
-
             } receiveValue: { [weak self] cities in
-
                 self?.state = .success(cities)
-
             }
             .store(in: &cancellables)
     }

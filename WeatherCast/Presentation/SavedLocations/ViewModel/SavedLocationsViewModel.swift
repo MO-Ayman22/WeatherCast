@@ -10,8 +10,8 @@ import Combine
 
 final class SavedLocationsViewModel: ObservableObject {
 
-    @Published var savedLocations: [SavedLocation] = []
-    @Published var isLoading: Bool = false
+    @Published private(set) var savedLocations: [SavedLocation] = []
+    @Published private(set) var isLoading: Bool = false
 
     private let getSavedLocationsUseCase: GetSavedLocationsUseCase
     private let removeLocationUseCase: RemoveLocationUseCase

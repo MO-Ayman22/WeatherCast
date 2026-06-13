@@ -10,6 +10,7 @@ import SwiftUI
 struct SavedLocationRowView: View {
 
     let location: SavedLocation
+    let theme: WeatherTheme
 
     var body: some View {
         HStack(spacing: 16) {
@@ -18,10 +19,10 @@ struct SavedLocationRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(location.location)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(theme.primaryTextColor)
                 Text(location.condition)
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(theme.secondaryTextColor)
             }
 
             Spacer()
@@ -29,7 +30,7 @@ struct SavedLocationRowView: View {
             Text(location.temperature.tempString)
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundColor(.white)
+                .foregroundColor(theme.primaryTextColor)
         }
         .padding()
         .background(.ultraThinMaterial)

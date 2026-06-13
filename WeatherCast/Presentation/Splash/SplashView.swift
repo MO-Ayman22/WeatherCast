@@ -9,7 +9,8 @@ import Foundation
 import SwiftUI
 
 struct SplashView: View {
-
+    
+    @EnvironmentObject var container: DIContainer
     @State private var logoScale: CGFloat = 0.5
     @State private var logoOpacity: CGFloat = 0
     @State private var titleOpacity: CGFloat = 0
@@ -17,10 +18,10 @@ struct SplashView: View {
     @State private var glowScale: CGFloat = 1.0
     @State private var isFinished: Bool = false
 
-    private var isMorning: Bool { Date().isMorning }
+    private var isDay: Bool { Date().isDay }
 
     private var gradient: LinearGradient {
-        isMorning
+        isDay
         ? LinearGradient(
             colors: [Color(hex: "#87CEEB"), Color(hex: "#4A90D9")],
             startPoint: .top,
@@ -34,7 +35,7 @@ struct SplashView: View {
     }
 
     private var textColor: Color {
-        isMorning ? .black : .white
+        isDay ? .black : .white
     }
 
     private var greetingText: String {
@@ -48,18 +49,13 @@ struct SplashView: View {
     }
 
     private var greetingIcon: String {
-        let hour = Date().hour
-        switch hour {
-        case 5..<12: return "sun.rise.fill"
-        case 12..<17: return "sun.max.fill"
-        case 17..<21: return "sun.set.fill"
-        default: return "moon.stars.fill"
-        }
+        isDay ? "sun.max.fill": "moon.stars.fill"
     }
 
     var body: some View {
         if isFinished {
-            ContentView()
+            ContentView(container: container)
+                .environmentObject(container)
         } else {
             splashContent
         }
@@ -69,8 +65,7 @@ struct SplashView: View {
         ZStack {
             gradient.ignoresSafeArea()
 
-            // Background animation
-            if isMorning {
+            if isDay {
                 SunAnimationView()
                     .opacity(0.3)
             } else {
@@ -87,7 +82,7 @@ struct SplashView: View {
 
                     Image(systemName: greetingIcon)
                         .font(.system(size: 55))
-                        .foregroundColor(isMorning ? Color(hex: "#FFD700") : .white)
+                        .foregroundColor(isDay ? Color(hex: "#FFD700") : .white)
                         .symbolRenderingMode(.multicolor)
                 }
                 .scaleEffect(logoScale)

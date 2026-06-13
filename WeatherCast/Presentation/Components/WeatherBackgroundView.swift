@@ -6,7 +6,7 @@ struct WeatherBackgroundView: View {
     let isDay: Bool
 
     private var theme: WeatherTheme {
-        WeatherTheme(date: isDay ? Calendar.current.date(bySettingHour: 10, minute: 0, second: 0, of: Date())! : Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date())!)
+        WeatherTheme(isDay: isDay)
     }
 
     var body: some View {

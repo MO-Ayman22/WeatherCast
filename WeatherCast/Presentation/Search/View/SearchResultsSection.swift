@@ -5,13 +5,13 @@
 //  Created by Mohamed Ayman on 11/06/2026.
 //
 
-import Foundation
 import SwiftUI
 
 struct SearchResultsSection: View {
 
     let state: SearchState
     let container: DIContainer
+    let theme: WeatherTheme
 
     var body: some View {
         switch state {
@@ -19,9 +19,17 @@ struct SearchResultsSection: View {
             EmptyView()
 
         case .loading:
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                .padding(.top, 40)
+            VStack(spacing: 16) {
+                Spacer()
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: theme.primaryTextColor))
+                    .scaleEffect(1.5)
+                Text("Searching...")
+                    .font(.subheadline)
+                    .foregroundColor(theme.secondaryTextColor)
+                Spacer()
+            }
+            .padding(.top, 60)
 
         case .success(let cities):
             if cities.isEmpty {
@@ -31,27 +39,46 @@ struct SearchResultsSection: View {
             }
 
         case .error(let message):
-            VStack(spacing: 12) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.system(size: 40))
-                    .foregroundColor(.orange)
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 80, height: 80)
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 36))
+                        .foregroundColor(.orange)
+                }
+                Text("Something went wrong")
+                    .font(.headline)
+                    .foregroundColor(theme.primaryTextColor)
                 Text(message)
-                    .foregroundColor(.white)
+                    .font(.caption)
+                    .foregroundColor(theme.secondaryTextColor)
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
             }
-            .padding(.top, 40)
+            .padding(.top, 60)
         }
     }
 
     private var emptyResults: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 40))
-                .foregroundColor(.white.opacity(0.6))
+        VStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(.ultraThinMaterial)
+                    .frame(width: 80, height: 80)
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 36))
+                    .foregroundColor(theme.primaryTextColor.opacity(0.5))
+            }
             Text("No cities found")
-                .foregroundColor(.white.opacity(0.6))
+                .font(.headline)
+                .foregroundColor(theme.primaryTextColor)
+            Text("Try a different city name")
+                .font(.caption)
+                .foregroundColor(theme.secondaryTextColor)
         }
-        .padding(.top, 40)
+        .padding(.top, 60)
     }
 
     private func resultsView(cities: [CityLocation]) -> some View {
@@ -60,12 +87,11 @@ struct SearchResultsSection: View {
                 NavigationLink {
                     WeatherDetailsView(city: city, container: container)
                 } label: {
-                    SearchResultRowView(city: city)
+                    SearchResultRowView(city: city, theme: theme)
                 }
-
                 if city.id != cities.last?.id {
                     Divider()
-                        .background(.white.opacity(0.3))
+                        .background(theme.secondaryTextColor.opacity(0.3))
                 }
             }
         }

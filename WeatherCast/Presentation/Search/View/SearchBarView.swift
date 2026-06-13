@@ -10,38 +10,27 @@ import SwiftUI
 struct SearchBarView: View {
 
     @Binding var text: String
-
     let onClear: () -> Void
+    let theme: WeatherTheme
 
     var body: some View {
-
         HStack(spacing: 12) {
-
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundColor(theme.secondaryTextColor)
 
-            TextField(
-                "Search city...",
-                text: $text
-            )
+            TextField("Search city...", text: $text)
+                .foregroundColor(theme.primaryTextColor)
+                .tint(theme.primaryTextColor)
 
             if !text.isEmpty {
-
-                Button {
-
-                    onClear()
-
-                } label: {
-
+                Button { onClear() } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundColor(theme.secondaryTextColor)
                 }
             }
         }
         .padding()
         .background(.ultraThinMaterial)
-        .clipShape(
-            RoundedRectangle(cornerRadius: 20)
-        )
+        .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

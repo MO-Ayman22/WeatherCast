@@ -6,7 +6,7 @@ struct HourlyView: View {
     let isDay: Bool
     let onDismiss: () -> Void
 
-    private var theme: WeatherTheme { WeatherTheme() }
+    private var theme: WeatherTheme { WeatherTheme(isDay: isDay) }
 
     private var visibleHours: [HourlyWeather] {
         guard day.dayLabel == "Today" else { return day.hours }
@@ -27,7 +27,6 @@ struct HourlyView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Custom nav bar
                 HStack {
                     Button {
                         onDismiss()
@@ -76,5 +75,7 @@ struct HourlyView: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
+
     }
 }

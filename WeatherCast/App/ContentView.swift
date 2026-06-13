@@ -11,25 +11,32 @@ struct ContentView: View {
 
     @EnvironmentObject var container: DIContainer
 
+    @StateObject private var homeViewModel: HomeViewModel
+    @StateObject private var searchViewModel: SearchViewModel
+    @StateObject private var savedViewModel: SavedLocationsViewModel
+
+    init(container: DIContainer) {
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel(container: container))
+        _searchViewModel = StateObject(wrappedValue: SearchViewModel(container: container))
+        _savedViewModel = StateObject(wrappedValue: SavedLocationsViewModel(container: container))
+    }
+
     var body: some View {
         ZStack {
-            Color(hex: "#0D1B2A")
-                .ignoresSafeArea()
-
             TabView {
-                HomeView(viewModel: HomeViewModel(container: container))
+                HomeView(viewModel: homeViewModel)
                     .tabItem {
-                        Label("Home", systemImage: "house.fill")
+                        Label("Home", systemImage: "house")
                     }
 
-                SearchView(viewModel: SearchViewModel(container: container))
+                SearchView(viewModel: searchViewModel)
                     .tabItem {
                         Label("Search", systemImage: "magnifyingglass")
                     }
 
-                SavedLocationsView(viewModel: SavedLocationsViewModel(container: container))
+                SavedLocationsView(viewModel: savedViewModel)
                     .tabItem {
-                        Label("Saved", systemImage: "heart.fill")
+                        Label("Saved", systemImage: "heart")
                     }
             }
         }

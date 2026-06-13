@@ -1,5 +1,7 @@
 import Foundation
+import UIKit
 import Combine
+import SwiftUI
 
 enum WeatherState: Equatable {
     case idle
@@ -9,26 +11,23 @@ enum WeatherState: Equatable {
 
     static func == (lhs: WeatherState, rhs: WeatherState) -> Bool {
         switch (lhs, rhs) {
-        case (.idle, .idle): return true
-        case (.loading, .loading): return true
+        case (.idle, .idle), (.loading, .loading): return true
         case (.error(let a), .error(let b)): return a == b
-        case (.success(let a), .success(let b)):
-            return a.current.location == b.current.location
+        case (.success(let a), .success(let b)): return a.current.location == b.current.location
         default: return false
         }
     }
 }
 
-class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject {
 
-    @Published var state: WeatherState = .idle
-    @Published var isSaved: Bool = false
+    @Published private(set) var state: WeatherState = .idle
+    @Published private(set) var isSaved: Bool = false
 
     private let getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase
     private let saveLocationUseCase: SaveLocationUseCase
     private let removeLocationUseCase: RemoveLocationUseCase
     private let checkIfSavedUseCase: CheckIfSavedUseCase
-
     private var cancellables = Set<AnyCancellable>()
 
     init(container: DIContainer) {
@@ -39,6 +38,7 @@ class HomeViewModel: ObservableObject {
     }
 
     func loadWeather() {
+        guard state != .loading else { return }
         state = .loading
 
         getCurrentLocationWeatherUseCase.execute()
@@ -48,8 +48,9 @@ class HomeViewModel: ObservableObject {
                     self?.state = .error(error.localizedDescription)
                 }
             } receiveValue: { [weak self] bundle in
-                self?.state = .success(bundle)
-                self?.checkIfSaved(locationName: bundle.current.location)
+                guard let self else { return }
+                self.state = .success(bundle)
+                self.checkIfSaved(locationName: bundle.current.location)
             }
             .store(in: &cancellables)
     }
@@ -82,4 +83,5 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+
 }

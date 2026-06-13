@@ -13,7 +13,7 @@ extension Date {
         Calendar.current.component(.hour, from: self)
     }
 
-    var isMorning: Bool {
+    var isDay: Bool {
         let h = hour
         return h >= 5 && h < 18
     }
