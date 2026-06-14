@@ -41,18 +41,57 @@ class DIContainer: ObservableObject {
     )
 
     lazy var saveLocationUseCase = SaveLocationUseCase(
-        local: localDataSource
+        repository: weatherRepository
     )
 
     lazy var removeLocationUseCase = RemoveLocationUseCase(
-        local: localDataSource
+        repository: weatherRepository
     )
 
     lazy var getSavedLocationsUseCase = GetSavedLocationsUseCase(
-        local: localDataSource
+        repository: weatherRepository
     )
 
     lazy var checkIfSavedUseCase = CheckIfSavedUseCase(
-        local: localDataSource
+        repository: weatherRepository
     )
+    
+    lazy var undoLastDeleteUseCase = UndoLastDeleteUseCase(
+        repository: weatherRepository
+    )
+    
+    func makeWeatherDetailsViewModel(
+        city: CityLocation
+    ) -> WeatherDetailsViewModel {
+        WeatherDetailsViewModel(
+            city: city,
+            getWeatherForLocationUseCase: getWeatherForLocationUseCase,
+            saveLocationUseCase: saveLocationUseCase,
+            removeLocationUseCase: removeLocationUseCase,
+            checkIfSavedUseCase: checkIfSavedUseCase,
+            undoLastDeleteUseCase: undoLastDeleteUseCase
+        )
+    }
+    
+    func makeSearchViewModel() -> SearchViewModel {
+        SearchViewModel(
+            searchCitiesUseCase: searchCitiesUseCase
+        )
+    }
+    
+    func makeSavedLocationsViewModel() -> SavedLocationsViewModel {
+        SavedLocationsViewModel(
+            getSavedLocationsUseCase : getSavedLocationsUseCase,
+            removeLocationUseCase : removeLocationUseCase
+        )
+    }
+    
+    func makeHomeViewModel() -> HomeViewModel {
+        HomeViewModel(
+            getCurrentLocationWeatherUseCase: getCurrentLocationWeatherUseCase,
+            saveLocationUseCase: saveLocationUseCase,
+            removeLocationUseCase: removeLocationUseCase,
+            checkIfSavedUseCase: checkIfSavedUseCase
+        )
+    }
 }

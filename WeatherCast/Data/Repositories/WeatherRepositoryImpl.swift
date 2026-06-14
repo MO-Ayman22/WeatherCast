@@ -50,6 +50,31 @@ class WeatherRepositoryImpl: WeatherRepository {
             }
             .eraseToAnyPublisher()
     }
+    
+    func saveLocation(_ bundle: WeatherBundle)
+    -> AnyPublisher<Void, Error> {
+        local.saveLocation(bundle)
+    }
+
+    func removeLocation(named locationName: String)
+    -> AnyPublisher<Void, Error> {
+        local.removeLocation(named: locationName)
+    }
+
+    func getSavedLocations()
+    -> AnyPublisher<[SavedLocation], Error> {
+        local.fetchSavedLocations()
+    }
+
+    func isLocationSaved(named locationName: String)
+    -> AnyPublisher<Bool, Error> {
+        local.isLocationSaved(named: locationName)
+    }
+
+    func undoLastDelete()
+    -> AnyPublisher<Void, Error> {
+        local.undoLastDelete()
+    }
 
     // MARK: - DTO → Domain Mapping
 
@@ -69,8 +94,8 @@ class WeatherRepositoryImpl: WeatherRepository {
             lon: dto.location.lon
         )
 
-        let forecast = dto.forecast.forecastday.enumerated().map { index, dayDTO in
-            mapToDaily(dayDTO: dayDTO, index: index)
+        let forecast = dto.forecast.forecastday.enumerated().map { _, dayDTO in
+            mapToDaily(dayDTO: dayDTO)
         }
 
         return WeatherBundle(
@@ -80,7 +105,7 @@ class WeatherRepositoryImpl: WeatherRepository {
         )
     }
 
-    private func mapToDaily(dayDTO: ForecastDayDTO, index: Int) -> DailyWeather {
+    private func mapToDaily(dayDTO: ForecastDayDTO) -> DailyWeather {
         let date = Date.from(apiDateString: dayDTO.date) ?? Date()
         let dayLabel = date.dayLabel()
 

@@ -23,8 +23,8 @@ final class SearchViewModel: ObservableObject {
     private let searchCitiesUseCase: SearchCitiesUseCase
     private var cancellables = Set<AnyCancellable>()
 
-    init(container: DIContainer) {
-        self.searchCitiesUseCase = container.searchCitiesUseCase
+    init(searchCitiesUseCase: SearchCitiesUseCase) {
+        self.searchCitiesUseCase = searchCitiesUseCase
         observeSearchText()
     }
 

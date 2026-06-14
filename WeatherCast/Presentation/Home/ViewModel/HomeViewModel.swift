@@ -30,11 +30,16 @@ final class HomeViewModel: ObservableObject {
     private let checkIfSavedUseCase: CheckIfSavedUseCase
     private var cancellables = Set<AnyCancellable>()
 
-    init(container: DIContainer) {
-        self.getCurrentLocationWeatherUseCase = container.getCurrentLocationWeatherUseCase
-        self.saveLocationUseCase = container.saveLocationUseCase
-        self.removeLocationUseCase = container.removeLocationUseCase
-        self.checkIfSavedUseCase = container.checkIfSavedUseCase
+    init(
+        getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase,
+        saveLocationUseCase: SaveLocationUseCase,
+        removeLocationUseCase: RemoveLocationUseCase,
+        checkIfSavedUseCase: CheckIfSavedUseCase
+    ) {
+        self.getCurrentLocationWeatherUseCase = getCurrentLocationWeatherUseCase
+        self.saveLocationUseCase = saveLocationUseCase
+        self.removeLocationUseCase = removeLocationUseCase
+        self.checkIfSavedUseCase = checkIfSavedUseCase
     }
 
     func loadWeather() {

@@ -35,14 +35,23 @@ final class WeatherDetailsViewModel: ObservableObject {
     private let saveLocationUseCase: SaveLocationUseCase
     private let removeLocationUseCase: RemoveLocationUseCase
     private let checkIfSavedUseCase: CheckIfSavedUseCase
+    private let undoLastDeleteUseCase: UndoLastDeleteUseCase
     private var cancellables = Set<AnyCancellable>()
 
-    init(city: CityLocation, container: DIContainer) {
+    init(
+        city: CityLocation,
+        getWeatherForLocationUseCase: GetWeatherForLocationUseCase,
+        saveLocationUseCase: SaveLocationUseCase,
+        removeLocationUseCase: RemoveLocationUseCase,
+        checkIfSavedUseCase: CheckIfSavedUseCase,
+        undoLastDeleteUseCase: UndoLastDeleteUseCase
+    ) {
         self.city = city
-        self.getWeatherForLocationUseCase = container.getWeatherForLocationUseCase
-        self.saveLocationUseCase = container.saveLocationUseCase
-        self.removeLocationUseCase = container.removeLocationUseCase
-        self.checkIfSavedUseCase = container.checkIfSavedUseCase
+        self.getWeatherForLocationUseCase = getWeatherForLocationUseCase
+        self.saveLocationUseCase = saveLocationUseCase
+        self.removeLocationUseCase = removeLocationUseCase
+        self.checkIfSavedUseCase = checkIfSavedUseCase
+        self.undoLastDeleteUseCase = undoLastDeleteUseCase
     }
 
     func loadWeather() {
@@ -85,15 +94,41 @@ final class WeatherDetailsViewModel: ObservableObject {
     
     func confirmRemove() {
         guard case .success(let bundle) = state else { return }
-        removeLocationUseCase.execute(locationName: bundle.current.location)
+
+        removeLocationUseCase.execute(
+            locationName: bundle.current.location
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] completion in
+            if case .failure(let error) = completion {
+                print(error.localizedDescription)
+                self?.showRemoveAlert = false
+            }
+        } receiveValue: { [weak self] _ in
+            guard let self else { return }
+
+            self.isSaved = false
+            self.showRemoveAlert = false
+
+            ToastManager.shared.showWithUndo(
+                message: "Removed from saved locations"
+            ) { [weak self] in
+                self?.undoDelete()
+            }
+        }
+        .store(in: &cancellables)
+    }
+
+    private func undoDelete() {
+        print("Button tapped, undoing delete...")
+        undoLastDeleteUseCase.execute()
             .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] _ in
-                self?.isSaved = false
-                ToastManager.shared.show(
-                    message: "Removed from saved locations",
-                    type: .info,
-                    isTabBarHidden: true
-                )
+            .sink { completion in
+                if case .failure(let error) = completion {
+                    print(error)
+                }
+            } receiveValue: { [weak self] _ in
+                self?.isSaved = true
             }
             .store(in: &cancellables)
     }

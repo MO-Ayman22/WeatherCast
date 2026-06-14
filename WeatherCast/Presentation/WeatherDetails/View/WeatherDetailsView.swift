@@ -15,7 +15,7 @@ struct WeatherDetailsView: View {
 
     init(city: CityLocation, container: DIContainer) {
         _viewModel = StateObject(
-            wrappedValue: WeatherDetailsViewModel(city: city, container: container)
+            wrappedValue: container.makeWeatherDetailsViewModel(city: city)
         )
     }
 

@@ -12,6 +12,7 @@ class CoreDataManager {
                 fatalError("CoreData failed to load: \(error)")
             }
         }
+        container.viewContext.undoManager = UndoManager()
         return container
     }()
 
@@ -20,15 +21,17 @@ class CoreDataManager {
     }
 
     var backgroundContext: NSManagedObjectContext {
-        persistentContainer.newBackgroundContext()
+        let context = persistentContainer.newBackgroundContext()
+        context.undoManager = UndoManager()
+        return context
     }
 
-    func save(context: NSManagedObjectContext) {
+    func save(context: NSManagedObjectContext) throws {
         guard context.hasChanges else { return }
-        do {
-            try context.save()
-        } catch {
-            print("CoreData save error: \(error)")
-        }
+        try context.save()
+    }
+
+    func undo(context: NSManagedObjectContext) {
+        context.undoManager?.undo()
     }
 }

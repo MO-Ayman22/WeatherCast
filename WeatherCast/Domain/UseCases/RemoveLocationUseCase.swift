@@ -2,13 +2,13 @@ import Combine
 
 class RemoveLocationUseCase {
 
-    private let local: WeatherLocalDataSource
+    private let repository: WeatherRepository
 
-    init(local: WeatherLocalDataSource) {
-        self.local = local
+    init(repository: WeatherRepository) {
+        self.repository = repository
     }
 
     func execute(locationName: String) -> AnyPublisher<Void, Error> {
-        local.removeLocation(named: locationName)
+        repository.removeLocation(named: locationName)
     }
 }

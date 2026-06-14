@@ -15,4 +15,5 @@ protocol WeatherLocalDataSource {
     func saveLocation(_ bundle: WeatherBundle) -> AnyPublisher<Void, Error>
     func removeLocation(named location: String) -> AnyPublisher<Void, Error>
     func isLocationSaved(named location: String) -> AnyPublisher<Bool, Error>
+    func undoLastDelete() -> AnyPublisher<Void, Error>
 }

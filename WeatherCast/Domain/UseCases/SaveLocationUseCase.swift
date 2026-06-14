@@ -2,13 +2,13 @@ import Combine
 
 class SaveLocationUseCase {
 
-    private let local: WeatherLocalDataSource
+    private let repository: WeatherRepository
 
-    init(local: WeatherLocalDataSource) {
-        self.local = local
+    init(repository: WeatherRepository) {
+        self.repository = repository
     }
 
     func execute(bundle: WeatherBundle) -> AnyPublisher<Void, Error> {
-        local.saveLocation(bundle)
+        repository.saveLocation(bundle)
     }
 }

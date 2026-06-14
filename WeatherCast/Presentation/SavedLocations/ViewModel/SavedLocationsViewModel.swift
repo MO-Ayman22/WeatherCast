@@ -17,9 +17,12 @@ final class SavedLocationsViewModel: ObservableObject {
     private let removeLocationUseCase: RemoveLocationUseCase
     private var cancellables = Set<AnyCancellable>()
 
-    init(container: DIContainer) {
-        self.getSavedLocationsUseCase = container.getSavedLocationsUseCase
-        self.removeLocationUseCase = container.removeLocationUseCase
+    init(
+        getSavedLocationsUseCase: GetSavedLocationsUseCase,
+        removeLocationUseCase: RemoveLocationUseCase
+    ) {
+        self.getSavedLocationsUseCase = getSavedLocationsUseCase
+        self.removeLocationUseCase = removeLocationUseCase
     }
 
     func loadSavedLocations() {

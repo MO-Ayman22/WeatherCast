@@ -14,6 +14,7 @@ class WeatherAPIService {
                 guard let http = response as? HTTPURLResponse else {
                     throw NetworkError.noData
                 }
+                
                 guard (200...299).contains(http.statusCode) else {
                     throw NetworkError.serverError(http.statusCode)
                 }

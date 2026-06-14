@@ -17,7 +17,7 @@ class WeatherRemoteDataSourceImpl: WeatherRemoteDataSource {
     }
 
     func fetchForecast(query: String) -> AnyPublisher<WeatherResponseDTO, NetworkError> {
-        service.fetch(endpoint: .forecast(query: query, days: 3))
+        service.fetch(endpoint: .forecast(query: query, days: 7))
     }
 
     func searchCities(query: String) -> AnyPublisher<[SearchResultDTO], NetworkError> {

@@ -16,9 +16,9 @@ struct ContentView: View {
     @StateObject private var savedViewModel: SavedLocationsViewModel
 
     init(container: DIContainer) {
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel(container: container))
-        _searchViewModel = StateObject(wrappedValue: SearchViewModel(container: container))
-        _savedViewModel = StateObject(wrappedValue: SavedLocationsViewModel(container: container))
+        _homeViewModel = StateObject(wrappedValue: container.makeHomeViewModel())
+        _searchViewModel = StateObject(wrappedValue: container.makeSearchViewModel())
+        _savedViewModel = StateObject(wrappedValue: container.makeSavedLocationsViewModel())
     }
 
     var body: some View {

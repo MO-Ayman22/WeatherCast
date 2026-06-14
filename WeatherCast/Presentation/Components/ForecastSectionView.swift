@@ -37,7 +37,7 @@ struct ForecastSectionView: View {
     }
 
     private var sectionHeader: some View {
-        Label("3-DAY FORECAST", systemImage: "calendar")
+        Label("7-DAY FORECAST", systemImage: "calendar")
             .font(.caption)
             .fontWeight(.semibold)
             .foregroundColor(theme.secondaryTextColor)

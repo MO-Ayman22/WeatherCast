@@ -2,13 +2,13 @@ import Combine
 
 class CheckIfSavedUseCase {
 
-    private let local: WeatherLocalDataSource
+    private let repository: WeatherRepository
 
-    init(local: WeatherLocalDataSource) {
-        self.local = local
+    init(repository: WeatherRepository) {
+        self.repository = repository
     }
 
     func execute(locationName: String) -> AnyPublisher<Bool, Error> {
-        local.isLocationSaved(named: locationName)
+        repository.isLocationSaved(named: locationName)
     }
 }
